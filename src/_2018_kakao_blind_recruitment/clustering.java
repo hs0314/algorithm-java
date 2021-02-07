@@ -1,4 +1,4 @@
-package _2019_kakao_blind_recruitment;
+package _2018_kakao_blind_recruitment;
 
 public class clustering {
     public static void main(String[] args) {
