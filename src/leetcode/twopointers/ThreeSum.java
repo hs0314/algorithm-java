@@ -5,74 +5,66 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ThreeSum {
+    /*
+    3수의 합이 0인 모든 해 구하기 (i,j,k다 다름)
+
+    제한
+    - num 3<= len <= 3000 (완전탐색 불가)
+    - num값 -100000 ~ 100000 (int 가능)
+    - 동일 해를 answerlist에 담으면 안됌 (순서는 상관없음)
+
+    todo
+    - O(N)동안 i를 픽스하고 그 뒷숫자 j,k에 대한 투포인터로 선택 (o(n2))
+    - 동일한 숫자에 대해서 중복해가 나오지 않도록 하려면..?
+    - 투포인터 처리를 위한 sort (o(nlogn))
+
+    tc
+    - 중복해가 나올 수 있는 케이스
+     */
     public static void main(String[] args) {
-        /*
-        - 3수의 합이 0인 모든 해 구하기 (i,j,k다 다름)
-        - num 3<= len <= 3000
-        - 동일 triplets를 answerlist에 담으면 안됌
-        
-        note
-        - 완탐 불가
-        - 포인터 3개두고 i,j,k 다 다르니까 O(N)에 가능? 혹은 i는 계속 1씩 증가시키고 그 내부에서 투포인터 -> O(N2)
-        - left,right,mid 두고 움직이는 조건을 어떻게 할것인가?
+        threeSum(new int[]{-1,0,1,2,-1,-4});
+        threeSum(new int[]{2,2,2,-1,-1,-1,-1,-1,-1});
+        threeSum(new int[]{0,1,1});
+    }
 
-        ?
-        - 해가 없는 경우
-        
-        엣지케이스
-        - 
-         */   
+    public static List<List<Integer>> threeSum(int[] nums) {
 
-        int[] nums = new int[]{-4,-2,-2,-2,0,1,2,2,2,3,3,4,4,6,6};
         List<List<Integer>> answerList = new ArrayList<>();
 
         Arrays.sort(nums);
 
         for (int i=0;i<nums.length-2;i++) {
 
-            // 중복 방지를 위해서 직전 처리와 동일한 i이면 skip
+            // 중복해 방지
             if (i > 0 && nums[i] == nums[i-1]) {
                 continue;
             }
 
-            // i를 픽스해서 여기서 투포인터
-            int left = i+1;
-            int right = nums.length-1;
+            // i fix 상태에서 투포인터로 j,k 선택
+            int j = i+1;
+            int k = nums.length-1;
 
-            while (left < right) {
-                int sum = nums[i] + nums[left] + nums[right];
+            while (j < k) {
 
-                if (sum == 0) {
-                    answerList.add(Arrays.asList(nums[i], nums[left], nums[right]));
-                    left++;
-                    right--;
-                }
+                if (nums[i]+nums[j]+nums[k] == 0) {
 
-                // 어떤 포인터를 언제 움직일지에 대한 규칙
-                if (sum > 0) {
-                    int prev = nums[right];
-                    right--;
-                    
-                    // 동일 값에 대해서 스킵
-                    while (prev == nums[right]) {
-                        right--;
+                    answerList.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    j++;
+
+                    // j중복 방지
+                    while (nums[j-1] == nums[j] && j < k) {
+                        j++;
                     }
-                } else {
-                    int prev = nums[left];
-                    left++;
-                    while (prev == nums[left]) {
-                        left++;
-                    }
-                }
 
+                } else if (nums[i]+nums[j]+nums[k] > 0) {
+                    k--;
+                } else if (nums[i]+nums[j]+nums[k] < 0) {
+                    j++;
+                }
             }
         }
-        for(List<Integer> ans : answerList) {
-            for(int a : ans) {
-                System.out.print(a + " ");
-            }
-            System.out.println();
-        }
+
+        return answerList;
     }
 }
 

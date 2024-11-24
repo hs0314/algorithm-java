@@ -1,52 +1,46 @@
 package leetcode.twopointers;
 
 public class ContainerWithMostWater {
-    public static void main(String[] args) {
-        Solution s = new Solution();
+    /*
+    height[i] 값은 x의 높이 값
+    두 x를 골라서 해당 높이들로 만들어지는 직사각형의 면적 최대값 구하기
 
-        s.maxArea(new int[]{1,8,6,2,5,4,8,3,7});
+    제한
+    - 개수 2~100000 (o(n2) 불가)
+    - 높이 0~10000
+
+    todo
+    - x=0, n-1 idx부터 각 이후 max값이 증가할 수 있는 방향으로 좌++ 혹은 우--
+    - 좌<우 인 동안 지속적으로 x값 변동
+    - 현재 좌,우의 높이값이 동일하면 아무거나 움직여도 상관이 없음?
+
+    tc
+    - 높이 0인 케이스
+    - 겉은 높이가 낮고 내부높이만 높은 경우
+     */
+    public static void main(String[] args) {
+        System.out.println(maxArea(new int[]{1,8,6,2,5,4,8,3,7}));
+        System.out.println(maxArea(new int[]{0,0}));
+        System.out.println(maxArea(new int[]{0,1}));
+        System.out.println(maxArea(new int[]{1,1,1,8,9,100,1,1,1}));
     }
 
-    public static class Solution {
-        /*
-        i번째 높이 height[i]
-        (left-right) * min(height[left], height[right]) 최대 만들기
+    public static int maxArea(int[] height) {
 
-        - n < 10의5제곱 -> O(n2)으로 풀면 간당간당함 => 투포인터 O(N)
-        - x를 움직일떄는 y가 늘어날때까지 (x가 줄어드는데 y는 커져야함)
+        int left = 0;
+        int right = height.length-1;
+        int answer = 0;
 
-          ? 좌우중에 어떤걸 먼저 움직일건가?
-           -> x가 1줄어드는건 동일하니 left, right중 다음 height가 더큰것 움직이는게? (X)
-           -> left,right를 현재 idx가지의 max height으로 보고 계산하는건?
-           -> hint: 포인터를 더 lower line쪽으로 움직여라 -> 컨테이너 높이를 높게 가져가야하고 높이는 더 짧은 hegiht이므로, 더 짧은 높이인 idx를 움직여서 답을 찾아라
+        while (left < right) {
 
-        - 엣지케이스
-         => 마지막에 몰려있는거
-
-         - 정리
-
-         */
-        public int maxArea(int[] height) {
-            int left = 0;
-            int right = height.length-1;
-            int max = -1;
-
-            while (left < right) {
-                int xlen = right - left;
-                int ylen = Math.min(height[left], height[right]);
-
-                if (max < xlen * ylen) {
-                    max = xlen * ylen;
-                }
-
-                if (height[left] >= height[right]) {
-                    right--;
-                } else {
-                    left++;
-                }
+            answer = Math.max(answer, (right-left) * Math.min(height[left], height[right]));
+            if (height[left] >= height[right]) {
+                right--;
+            } else {
+                left++;
             }
-
-            return max;
         }
+
+        return answer;
     }
 }
